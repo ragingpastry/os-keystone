@@ -1,0 +1,4 @@
+---
+- include: install-packages.yml
+- include: keystone-bootstrap.yml
+- include: keystone-configure.yml

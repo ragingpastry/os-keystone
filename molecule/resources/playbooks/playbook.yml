@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: Update apt cache on Debian based systems
+      apt: update_cache=yes cache_valid_time=3600
+      when: ansible_os_family == "Debian"
+    - name: Install prerequisite packages for facts
+      package: name={{ item }}
+      with_items:
+        - iproute
+    - name: Install prerequisite packages for tests
+      package: name={{ item }}
+      with_items:
+        - curl
+    - name: Gather facts now that prerequisite packages are installed
+      setup: filter=ansible_*
+
+- hosts: keystone-hosts
+  roles:
+    - role: os-keystone
+      db_host: "{{ hostvars[groups['database'][0]]['ansible_eth0']['ipv4']['address'] }}"
+      keystone_url: "{{ ansible_eth0['ipv4']['address'] }}"

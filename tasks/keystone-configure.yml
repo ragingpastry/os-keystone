@@ -1,0 +1,63 @@
+---
+- name: Create temporary environment file
+  template:
+    src: tmpauth.sh.j2
+    dest: /tmp/tmpauth.sh
+
+- name: Create initial keystone-paste.ini
+  template:
+    src: keystone-paste.ini-preinstall.j2
+    dest: /etc/keystone/keystone-paste.ini
+
+- name: Create the service project
+  os_project:
+    domain: "{{ keystone_domain }}"
+    description: "Service Project"
+    name: "service"
+    state: present
+    auth: "{{ tmp_auth_dict }}"
+    endpoint_type: admin
+  run_once: True
+
+- name: Create the demo project
+  os_project:
+    domain: "{{ keystone_domain }}"
+    description: "Demo Project"
+    name: "demo"
+    state: present
+    auth: "{{ tmp_auth_dict }}"
+    endpoint_type: admin
+  run_once: True
+
+- name: Create the demo user
+  os_user:
+    domain: "{{ keystone_domain }}"
+    name: "demo"
+    password: "{{ demo_user_password }}"
+    state: present
+    auth: "{{ tmp_auth_dict }}"
+    endpoint_type: admin
+  run_once: True
+
+- name: Create the user role
+  os_keystone_role:
+    name: "user"
+    state: present
+    auth: "{{ tmp_auth_dict }}"
+    endpoint_type: admin
+  run_once: True
+
+- name: Add the user role to the demo user in the demo project
+  os_user_role:
+    user: "demo"
+    role: "user"
+    project: "demo"
+    state: present
+    auth: "{{ tmp_auth_dict }}"
+    endpoint_type: admin
+  run_once: True
+
+- name: Create final keystone-paste.ini
+  template:
+    src: keystone-paste.ini-postinstall.j2
+    dest: /etc/keystone/keystone-paste.ini

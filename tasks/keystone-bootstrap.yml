@@ -1,0 +1,60 @@
+---
+- name: Create keystone.conf
+  template:
+    src: keystone.conf.j2
+    dest: /etc/keystone/keystone.conf
+
+- name: Populate keystone database
+  shell: |
+    /bin/sh -c "keystone-manage db_sync" keystone && \
+    touch /tmp/.keystone-shell-populatedb
+  args:
+    creates: /tmp/.keystone-shell-populatedb
+
+- name: Setup fernet
+  shell: |
+    keystone-manage fernet_setup --keystone-user keystone \
+    --keystone-group keystone && \
+    touch /tmp/.keystone-shell-fernet1
+  args:
+    creates: /tmp/.keystone-shell-fernet1
+
+- name: Setup fernet credentials
+  shell: |
+    keystone-manage credential_setup --keystone-user keystone \
+    --keystone-group keystone && \
+    touch /tmp/.keystone-shell-fernet2
+  args:
+    creates: /tmp/.keystone-shell-fernet2
+
+- name: Bootstrap Keystone
+  shell: |
+    keystone-manage bootstrap --bootstrap-password "{{ keystone_password }}" \
+    --bootstrap-admin-url "{{ keystone_admin_url }}" \
+    --bootstrap-internal-url "{{ keystone_internal_url }}" \
+    --bootstrap-public-url "{{ keystone_public_url }}" \
+    --bootstrap-region-id "{{ keystone_region }}" && \
+    touch /tmp/.keystone-shell-keystone-bootstrap
+  args:
+    creates: /tmp/.keystone-shell-keystone-bootstrap
+
+- name: Create httpd config
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+
+- name: Create wsgi-keystone link
+  file:
+    src: /usr/share/keystone/wsgi-keystone.conf
+    dest: /etc/httpd/conf.d/wsgi-keystone.conf
+    state: link
+
+- name: Start and enable services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: True
+  with_items:
+    - httpd
+
+

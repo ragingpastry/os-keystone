@@ -1,0 +1,32 @@
+---
+openstack_ocata_repository_url: "http://mirror.centos.org/centos/7/cloud/x86_64/openstack-ocata/"
+epel_repository_url: "https://dl.fedoraproject.org/pub/epel/7/x86_64"
+yum_installation_packages:
+  - openstack-keystone
+  - httpd
+  - mod_wsgi
+  - python-openstackclient
+  - openstack-selinux
+  - python-pip
+
+keystone_url: controller
+
+tmp_auth_dict:
+  username: admin
+  password: f20ae96a13915ea8abd2a954274d54da463f9caa
+  project_name: admin
+  user_domain_name: Default
+  project_domain_name: Default
+  auth_url: "{{ keystone_admin_url }}"
+
+
+admin_token: 6a7415c7584c25fbe16f7c5e44d3436d4d001bde
+dbpassword: test
+keystone_password: f20ae96a13915ea8abd2a954274d54da463f9caa
+demo_user_password: d8c020caf55be637c9c509c29b1db33b41dc8ff8
+
+keystone_admin_url: "http://{{ keystone_url }}:35357/v3/"
+keystone_internal_url: "http://{{ keystone_url }}:5000/v3/"
+keystone_public_url: "http://{{ keystone_url }}:5000/v3/"
+keystone_region: "RegionOne"
+keystone_domain: default

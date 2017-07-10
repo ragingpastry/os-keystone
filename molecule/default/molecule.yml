@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: database
+    image: mariadb
+    command: mysqld
+    environment:
+      MYSQL_ROOT_PASSWORD: install
+      MYSQL_USER: keystone
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: keystone
+    groups:
+      - database
+  - name: keystone
+    image: retr0h/centos7-systemd-ansible:latest 
+    privileged: True
+    command: /usr/sbin/init
+    groups:
+      - keystone-hosts
+provisioner:
+  name: ansible
+  playbooks:
+    setup: ../resources/playbooks/create.yml
+    teardown: ../resources/playbooks/destroy.yml
+    converge: ../resources/playbooks/playbook.yml
+  lint:
+    name: ansible-lint
+scenario:
+  name: default
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

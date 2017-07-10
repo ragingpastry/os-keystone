@@ -1,0 +1,27 @@
+---
+- name: Ensure Openstack repositories are present
+  yum_repository:
+    name: openstack-ocata
+    description: openstack-ocata
+    enabled: True
+    gpgcheck: False
+    baseurl: "{{ openstack_ocata_repository_url }}"
+
+- name: Ensure EPEL repository is present
+  yum_repository:
+    name: epel
+    description: epel
+    enabled: True
+    gpgcheck: False
+    baseurl: "{{ epel_repository_url }}"
+
+- name: Install yum packages
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ yum_installation_packages }}"
+
+- name: Install Shade
+  pip:
+    name: shade
+    state: present

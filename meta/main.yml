@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Nick Wilburn
+  description: OS-Keystone Role
+
+  license: BSD
+
+  min_ansible_version: 2.3
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  galaxy_tags:
+    - openstack
+    - keystone
+
+dependencies: []
