@@ -7,15 +7,12 @@
     molecule_ephemeral_directory: "{{ lookup('env','MOLECULE_EPHEMERAL_DIRECTORY') }}"
     molecule_yml: "{{ lookup('file', molecule_file) | from_yaml }}"
   tasks:
-    - name: Debug
-      debug:
-        var: environment
     - name: Create Dockerfiles from image names
       template:
         src: Dockerfile.j2
         dest: "{{ molecule_ephemeral_directory }}/Dockerfile_{{ item.image | regex_replace('[^a-zA-Z0-9_]', '_') }}"
       with_items: "{{ molecule_yml.platforms }}"
-      register: platforms 
+      register: platforms
 
     - name: Build an Ansible compatible image
       docker_image:

@@ -4,9 +4,9 @@
     src: tmpauth.sh.j2
     dest: /tmp/tmpauth.sh
 
-- name: Create initial keystone-paste.ini
+- name: Create keystone-paste
   template:
-    src: keystone-paste.ini-preinstall.j2
+    src: keystone-paste.ini.j2
     dest: /etc/keystone/keystone-paste.ini
 
 - name: Create the service project
@@ -29,6 +29,7 @@
     endpoint_type: admin
   run_once: True
 
+# Horrible hack to keep idempotency
 - name: Create the demo user
   os_user:
     domain: "{{ keystone_domain }}"
@@ -37,7 +38,9 @@
     state: present
     auth: "{{ tmp_auth_dict }}"
     endpoint_type: admin
+    update_password: on_create
   run_once: True
+  changed_when: False
 
 - name: Create the user role
   os_keystone_role:
@@ -56,8 +59,3 @@
     auth: "{{ tmp_auth_dict }}"
     endpoint_type: admin
   run_once: True
-
-- name: Create final keystone-paste.ini
-  template:
-    src: keystone-paste.ini-postinstall.j2
-    dest: /etc/keystone/keystone-paste.ini

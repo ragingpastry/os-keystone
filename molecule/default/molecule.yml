@@ -17,7 +17,7 @@ platforms:
     groups:
       - database
   - name: keystone
-    image: retr0h/centos7-systemd-ansible:latest 
+    image: retr0h/centos7-systemd-ansible:latest
     privileged: True
     command: /usr/sbin/init
     groups:

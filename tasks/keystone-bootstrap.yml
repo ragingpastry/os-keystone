@@ -56,5 +56,3 @@
     enabled: True
   with_items:
     - httpd
-
-
