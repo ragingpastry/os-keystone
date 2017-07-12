@@ -3,7 +3,7 @@ import pytest
 import json
 
 import testinfra.utils.ansible_runner
-import testinfra.utils.openstack as openstack
+import openstack as openstack
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('keystone-hosts')
