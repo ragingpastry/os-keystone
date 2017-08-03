@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/ragingpastry/os-keystone.svg?branch=master)](https://travis-ci.org/ragingpastry/os-keystone)
 
 
-Role Name
+os-keystone
 =========
 
 This role will install Openstack Keystone.
